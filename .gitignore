@@ -1,0 +1,48 @@
+Last login: Tue Apr  1 22:13:43 on ttys000
+~$cd Desktop 
+~/Desktop$ls
+BAD_Decesion_Studio	Vlog #43		resume
+Icon?			aryanofficialjain
+~/Desktop$touch .gitignore
+~/Desktop$nano .gitignore 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  UW PICO 5.09                    File: .gitignore                    Modified  
+
+# Node.js dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Compiled files
+dist/
+build/
+out/
+
+# TypeScript files
+
+^G Get Help  ^O WriteOut  ^R Read File ^Y Prev Pg   ^K Cut Text  ^C Cur Pos   
+^X Exit      ^J Justify   ^W Where is  ^V Next Pg   ^U UnCut Text^T To Spell  
