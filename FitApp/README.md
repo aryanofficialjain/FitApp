@@ -1,50 +1,139 @@
-# Welcome to your Expo app 👋
+# AI Food Planner MVP
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native mobile application that helps users plan their meals with AI-powered food recommendations and nutritional tracking.
 
-## Get started
+## Features
 
-1. Install dependencies
+### 🏠 Home Screen
+- **Personalized Greeting**: Welcome message with user's name
+- **Nutritional Metrics**: Real-time tracking of calories, protein, and carbs
+- **Daily/Weekly Toggle**: Switch between daily and weekly meal views
+- **Meal Cards**: Visual representation of breakfast, lunch, snacks, and dinner
+- **AI Recommendations**: Button to access AI-powered food suggestions
 
-   ```bash
-   npm install
-   ```
+### 📊 Stats Screen
+- **Progress Chart**: Visual representation of nutritional progress over time
+- **Nutritional Stats**: Detailed breakdown of calories, protein, carbs, and fat
+- **Grid/Compact View**: Toggle between different display modes
+- **Real-time Updates**: Stats update automatically as meals are added
 
-2. Start the app
+### 🤖 AI Food Recommendations
+- **Category-based Filtering**: Browse recommendations by meal type (breakfast, lunch, dinner, snacks)
+- **Nutritional Information**: Each recommendation includes detailed nutritional data
+- **Easy Integration**: One-tap to add recommended foods to your meal plan
+- **Smart Suggestions**: AI-powered recommendations based on nutritional goals
 
-   ```bash
-   npx expo start
-   ```
+### 📱 User Experience
+- **Modern UI**: Clean, intuitive interface with smooth animations
+- **Responsive Design**: Optimized for mobile devices
+- **Tab Navigation**: Easy switching between home and stats screens
+- **Real-time Updates**: All data updates instantly across the app
 
-In the output, you'll find options to open the app in a
+## Technical Stack
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- **React Native**: Cross-platform mobile development
+- **Expo**: Development platform and tools
+- **TypeScript**: Type-safe development
+- **React Context**: State management for meal planning
+- **React Native Chart Kit**: Data visualization
+- **Expo Vector Icons**: Icon library
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Getting Started
 
-## Get a fresh project
+### Prerequisites
+- Node.js (v16 or higher)
+- npm or yarn
+- Expo CLI
 
-When you're ready, run:
+### Installation
 
+1. Clone the repository:
 ```bash
-npm run reset-project
+git clone <repository-url>
+cd ai-diet-planner
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
+```bash
+npm install
+```
 
-## Learn more
+3. Start the development server:
+```bash
+npm start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. Run on your device:
+   - Scan the QR code with Expo Go app (iOS/Android)
+   - Or press 'i' for iOS simulator or 'a' for Android emulator
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Project Structure
 
-## Join the community
+```
+ai-diet-planner/
+├── app/
+│   ├── (tabs)/
+│   │   ├── index.tsx          # Home screen
+│   │   ├── stats.tsx          # Stats screen
+│   │   └── _layout.tsx        # Tab navigation
+│   ├── _layout.tsx            # Root layout with providers
+│   └── stats.tsx              # Standalone stats screen
+├── components/
+│   ├── AIFoodRecommendation.tsx  # AI recommendations modal
+│   ├── MealPlanContext.tsx       # State management
+│   └── ...                     # Other UI components
+├── assets/                     # Images and fonts
+└── package.json
+```
 
-Join our community of developers creating universal apps.
+## Key Components
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+### MealPlanContext
+Manages the global state for:
+- Meal data (breakfast, lunch, snacks, dinner)
+- Nutritional targets and current progress
+- Functions to update and remove meals
+
+### AIFoodRecommendation
+Modal component that provides:
+- AI-powered food suggestions
+- Category filtering
+- Nutritional information display
+- Easy meal integration
+
+### Home Screen
+Main dashboard featuring:
+- Nutritional metrics with real-time updates
+- Meal cards with add/remove functionality
+- AI recommendation access
+- Daily/weekly view toggle
+
+### Stats Screen
+Analytics dashboard with:
+- Progress charts
+- Detailed nutritional breakdown
+- Multiple view modes
+- Real-time data updates
+
+## Future Enhancements
+
+- **Backend Integration**: Connect to real AI APIs for personalized recommendations
+- **User Authentication**: User accounts and profile management
+- **Meal History**: Track past meals and nutritional trends
+- **Recipe Integration**: Detailed recipes for recommended meals
+- **Social Features**: Share meal plans with friends
+- **Notifications**: Reminders for meal times
+- **Barcode Scanning**: Scan food items for automatic nutritional data
+- **Dietary Restrictions**: Support for various dietary needs (vegetarian, gluten-free, etc.)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.

@@ -1,57 +1,58 @@
-import { CustomBottomNav, Nav_Items } from '@/components/ui/CustomNavigationBar';
+import { CustomBottomNav, NAV_ITEMS } from '@/components/CustomBottomNav';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import HomeScreen from './index';
-
-
-
-
+import { StyleSheet, View } from 'react-native';
 
 export default function TabLayout() {
   const [activeTab, setActiveTab] = useState('home');
 
-
-  const handleTabPrss = (tabId: string) => {
+  const handleTabPress = (tabId: string) => {
     setActiveTab(tabId);
-  }
+  };
 
   const renderScreen = () => {
-    switch(activeTab){
+    switch (activeTab) {
       case 'home':
-        return <HomeScreen />;
+        return <HomeScreen onNavigate={handleTabPress} />;
       case 'meals':
-        return <View><Text>Meals</Text></View>
+        return <MealsScreen />;
       case 'profile':
-        return <View><Text>Profile</Text></View>
+        return <ProfileScreen />;
       case 'settings':
-        return <View><Text>Settings</Text></View>      
+        return <SettingsScreen />;
       default:
-        return <HomeScreen />  
+        return <HomeScreen onNavigate={handleTabPress} />;
     }
-  }
-
+  };
 
   return (
     <View style={styles.container}>
+      {/* Screen Content */}
       <View style={styles.content}>
         {renderScreen()}
       </View>
-      <CustomBottomNav items={Nav_Items} activeTab={activeTab} onTabPress={handleTabPrss} />
-
-     
+      
+      {/* Custom Bottom Navigation */}
+      <CustomBottomNav
+        items={NAV_ITEMS}
+        activeTab={activeTab}
+        onTabPress={handleTabPress}
+      />
     </View>
-  )
-};
+  );
+}
+
+// Import the screen components
+import HomeScreen from './index';
+import MealsScreen from './meals';
+import ProfileScreen from './profile';
+import SettingsScreen from './settings';
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    backgroundColor: '#E0F2FE'
-
+    flex: 1,
+    backgroundColor: '#f1e3ec',
   },
-
   content: {
-    flex:1,
-
+    flex: 1,
   },
-})
+});

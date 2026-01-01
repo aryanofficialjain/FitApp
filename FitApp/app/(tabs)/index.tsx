@@ -1,36 +1,25 @@
-import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useMealPlan } from "@/components/MealPlanContext";
+import { Ionicons } from "@expo/vector-icons";
+import React, { useState } from "react";
+import {
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-type HomeScreenProps = {
-  onNavigate?: (tab: string) => void;
-};
+const { width } = Dimensions.get("window");
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
-  const [selectedView, setSelectedView] = useState<'Daily' | 'Weekly'>('Daily');
+// Home Screen Component
+const HomeScreen = ({ onNavigate }: { onNavigate?: (tab: string) => void }) => {
+  const [selectedView, setSelectedView] = useState("Daily");
+  const { meals, nutritionalData, getTotalNutrition, personalInfo } =
+    useMealPlan();
+  const totalNutrition = getTotalNutrition();
 
-  /* ------------------ Meal Card ------------------ */
-  const MealCard = ({ meal }: { meal: any }) => (
-    <View style={{ padding: 12 }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <View>
-          <Text>{meal.title}</Text>
-          <Text>{meal.time}</Text>
-        </View>
-
-        {meal.hasFood ? (
-          <Ionicons name="checkmark-circle" size={20} color="#4CAF50" />
-        ) : (
-          <Ionicons name="close-circle" size={20} color="#999" />
-        )}
-      </View>
-
-      {meal.food && <Text>{meal.food.name}</Text>}
-    </View>
-  );
-
-  /* ------------------ Metric Card ------------------ */
   const MetricCard = ({
     icon,
     color,
@@ -44,147 +33,180 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
     value: number;
     target: number;
   }) => {
-    const percentage =
-      target > 0 ? Math.min((value / target) * 100, 100) : 100;
-
+    const percentage = target > 0 ? Math.min((value / target) * 100, 100) : 0;
     const isOverTarget = value > target;
 
     return (
-      <View style={{ padding: 12, backgroundColor: color, borderRadius: 8 }}>
-        <Ionicons name={icon as any} size={20} color="white" />
-        <Text style={{ color: 'white' }}>{title}</Text>
-
-        <Text style={{ color: 'white' }}>
-          {value}/{target} {title === 'Calorie' ? 'kcal' : 'g'}
+      <View style={styles.metricCard}>
+        <View style={[styles.metricIcon, { backgroundColor: color }]}>
+          <Ionicons name={icon as any} size={20} color="white" />
+        </View>
+        <Text style={styles.metricTitle}>{title}:</Text>
+        <Text style={styles.metricValue}>
+          {value}/{target}
+          {title === "Calorie" ? " kcal" : "g"}
         </Text>
-
-        <View style={{ height: 6, backgroundColor: '#ddd', marginTop: 6 }}>
+        <View style={styles.progressBar}>
           <View
-            style={{
-              width: `${percentage}%`,
-              height: 6,
-              backgroundColor: isOverTarget ? '#4682B4' : '#7EC8E3',
-            }}
+            style={[
+              styles.progressFill,
+              {
+                width: `${percentage}%`,
+                backgroundColor: isOverTarget ? "#FF5722" : "#4CAF50",
+              },
+            ]}
           />
         </View>
-
-        <Text style={{ color: 'white' }}>
+        <Text
+          style={[
+            styles.percentageText,
+            { color: isOverTarget ? "#FF5722" : "#4CAF50" },
+          ]}
+        >
           {percentage.toFixed(0)}%
         </Text>
       </View>
     );
   };
 
-  /* ------------------ Sample Data ------------------ */
-  const metrics = [
-    { icon: 'flame', color: '#4FC3F7', title: 'Calorie', value: 1200, target: 2000 },
-    { icon: 'barbell', color: '#87CEEB', title: 'Protein', value: 80, target: 150 },
-    { icon: 'leaf', color: '#5DADE2', title: 'Carbs', value: 150, target: 250 },
-    { icon: 'water', color: '#00BFFF', title: 'Fat', value: 40, target: 65 },
-  ];
+  const MealCard = ({ meal }: { meal: any }) => (
+    <View style={styles.mealCard}>
+      <View style={styles.mealHeader}>
+        <View>
+          <Text style={styles.mealTitle}>{meal.title}</Text>
+          <Text style={styles.mealTime}>({meal.time})</Text>
+        </View>
+        {meal.hasFood ? (
+          <Ionicons name="checkmark" size={20} color="#4CAF50" />
+        ) : (
+          <Ionicons name="add" size={20} color="#999" />
+        )}
+      </View>
+      {meal.food && <Text style={styles.mealFood}>{meal.food.name}</Text>}
+    </View>
+  );
 
-  const meals = [
-    { title: 'Breakfast', time: '8:00 AM', hasFood: true, food: { name: 'Oatmeal with fruits' } },
-    { title: 'Lunch', time: '12:30 PM', hasFood: true, food: { name: 'Grilled chicken salad' } },
-    { title: 'Dinner', time: '7:00 PM', hasFood: false, food: null },
-    { title: 'Snacks', time: '3:00 PM', hasFood: true, food: { name: 'Protein shake' } },
-  ];
-
-  /* ------------------ UI ------------------ */
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#E0F2FE' }}>
-      <ScrollView>
+    <SafeAreaView style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            padding: 16,
-            alignItems: 'center',
-          }}
-        >
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+        <View style={styles.header}>
+          <View style={styles.dateContainer}>
             <Ionicons name="time-outline" size={16} color="#666" />
-            <Text style={{ fontSize: 14, color: '#666' }}>JULY 14, 2025</Text>
+            <Text style={styles.dateText}>July 14, 2025</Text>
             <Ionicons name="chevron-down" size={16} color="#666" />
           </View>
-
-          <TouchableOpacity onPress={() => onNavigate?.('Profile')}>
+          <TouchableOpacity>
             <Ionicons name="person-outline" size={24} color="#333" />
           </TouchableOpacity>
         </View>
 
-        {/* Daily/Weekly Toggle */}
-        <View style={{ flexDirection: 'row', paddingHorizontal: 16, gap: 8, marginBottom: 16 }}>
+        {/* Greeting */}
+        <View style={styles.greetingContainer}>
+          <Text style={styles.greetingText}>Greetings there,</Text>
+          <Text style={styles.questionText}>Are You Eating Healthy?</Text>
+        </View>
+
+        {/* Metrics */}
+        <View style={styles.metricsContainer}>
+          {personalInfo ? (
+            <>
+              <MetricCard
+                icon="flame"
+                color="#FFC107"
+                title="Calorie"
+                value={totalNutrition.calories}
+                target={nutritionalData.calories}
+              />
+              <MetricCard
+                icon="water"
+                color="#2196F3"
+                title="Protein"
+                value={totalNutrition.protein}
+                target={nutritionalData.protein}
+              />
+              <MetricCard
+                icon="leaf"
+                color="#4CAF50"
+                title="Carbs"
+                value={totalNutrition.carbs}
+                target={nutritionalData.carbs}
+              />
+            </>
+          ) : (
+            <View style={styles.setupPrompt}>
+              <Ionicons name="person-add" size={48} color="#999" />
+              <Text style={styles.setupPromptTitle}>Complete Your Profile</Text>
+              <Text style={styles.setupPromptText}>
+                Set up your personal information to get personalized nutrition
+                targets and AI recommendations.
+              </Text>
+              <TouchableOpacity
+                style={styles.setupButton}
+                onPress={() => onNavigate?.("meals")}
+              >
+                <Text style={styles.setupButtonText}>Go to Meals & Setup</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
+        {/* View Toggle */}
+        <View style={styles.toggleContainer}>
           <TouchableOpacity
-            onPress={() => setSelectedView('Daily')}
-            style={{
-              flex: 1,
-              padding: 12,
-              borderRadius: 8,
-              backgroundColor: selectedView === 'Daily' ? '#87CEEB' : '#fff',
-              alignItems: 'center',
-            }}
+            style={[
+              styles.toggleButton,
+              selectedView === "Daily" && styles.toggleButtonActive,
+            ]}
+            onPress={() => setSelectedView("Daily")}
           >
-            <Text style={{ color: selectedView === 'Daily' ? '#fff' : '#666', fontWeight: '600' }}>
+            <Ionicons
+              name="calendar"
+              size={16}
+              color={selectedView === "Daily" ? "#333" : "#999"}
+            />
+            <Text
+              style={[
+                styles.toggleText,
+                selectedView === "Daily" && styles.toggleTextActive,
+              ]}
+            >
               Daily
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => setSelectedView('Weekly')}
-            style={{
-              flex: 1,
-              padding: 12,
-              borderRadius: 8,
-              backgroundColor: selectedView === 'Weekly' ? '#87CEEB' : '#fff',
-              alignItems: 'center',
-            }}
+            style={[
+              styles.toggleButton,
+              selectedView === "Weekly" && styles.toggleButtonActive,
+            ]}
+            onPress={() => setSelectedView("Weekly")}
           >
-            <Text style={{ color: selectedView === 'Weekly' ? '#fff' : '#666', fontWeight: '600' }}>
+            <Ionicons
+              name="calendar-outline"
+              size={16}
+              color={selectedView === "Weekly" ? "#333" : "#999"}
+            />
+            <Text
+              style={[
+                styles.toggleText,
+                selectedView === "Weekly" && styles.toggleTextActive,
+              ]}
+            >
               Weekly
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View>
-          <Text></Text>
-          <Text style={{fontSize: 30, textAlign: 'center' }}>Are You Eating</Text>
-          <Text style={{fontSize: 80, textAlign: 'center', color: '#0cff08ff', fontWeight: 700}}>Healthy</Text>
-        </View>
-
-        {/* Metrics Grid */}
-        <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 12, color: '#333' }}>
-            Today's Progress
-          </Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
-            {metrics.map((metric, index) => (
-              <View key={index} style={{ width: '47%' }}>
-                <MetricCard
-                  icon={metric.icon}
-                  color={metric.color}
-                  title={metric.title}
-                  value={metric.value}
-                  target={metric.target}
-                />
-              </View>
+        {/* Meals */}
+        <View style={styles.mealsContainer}>
+          <View style={styles.mealRow}>
+            {meals.slice(0, 2).map((meal) => (
+              <MealCard key={meal.id} meal={meal} />
             ))}
           </View>
-        </View>
-
-        {/* Meals Section */}
-        <View style={{ paddingHorizontal: 16, marginBottom: 24 }}>
-          <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 12, color: '#333' }}>
-            Meals
-          </Text>
-          <View style={{ backgroundColor: '#fff', borderRadius: 12, overflow: 'hidden' }}>
-            {meals.map((meal, index) => (
-              <View key={index}>
-                <MealCard meal={meal} />
-                {index < meals.length - 1 && (
-                  <View style={{ height: 1, backgroundColor: '#f0f0f0', marginHorizontal: 12 }} />
-                )}
-              </View>
+          <View style={styles.mealRow}>
+            {meals.slice(2, 4).map((meal) => (
+              <MealCard key={meal.id} meal={meal} />
             ))}
           </View>
         </View>
@@ -194,3 +216,188 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigate }) => {
 };
 
 export default HomeScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#f1e3ec",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 24,
+  },
+  dateContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  dateText: {
+    fontSize: 16,
+    color: "#666",
+  },
+  greetingContainer: {
+    paddingHorizontal: 24,
+    marginBottom: 36,
+  },
+  greetingText: {
+    fontSize: 26,
+    color: "#999",
+    fontWeight: "300",
+  },
+  questionText: {
+    fontSize: 32,
+    color: "#333",
+    fontWeight: "bold",
+    marginTop: 8,
+  },
+  metricsContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 24,
+    gap: 16,
+    marginBottom: 36,
+  },
+  metricCard: {
+    flex: 1,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    alignItems: "center",
+    minHeight: 120,
+  },
+  metricIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  metricTitle: {
+    fontSize: 14,
+    color: "#666",
+    marginBottom: 6,
+  },
+  metricValue: {
+    fontSize: 14,
+    color: "#333",
+    fontWeight: "600",
+  },
+  progressBar: {
+    width: "100%",
+    height: 8,
+    backgroundColor: "#e0e0e0",
+    borderRadius: 4,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  progressFill: {
+    height: "100%",
+    borderRadius: 4,
+  },
+  percentageText: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+  toggleContainer: {
+    flexDirection: "row",
+    paddingHorizontal: 24,
+    marginBottom: 24,
+    backgroundColor: "white",
+    marginHorizontal: 24,
+    borderRadius: 16,
+    padding: 6,
+  },
+  toggleButton: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    paddingVertical: 16,
+    borderRadius: 12,
+    gap: 8,
+  },
+  toggleButtonActive: {
+    backgroundColor: "#f1e3ec",
+  },
+  toggleText: {
+    fontSize: 16,
+    color: "#999",
+  },
+  toggleTextActive: {
+    color: "#333",
+    fontWeight: "600",
+  },
+  mealsContainer: {
+    paddingHorizontal: 24,
+    gap: 16,
+  },
+  mealRow: {
+    flexDirection: "row",
+    gap: 16,
+  },
+  mealCard: {
+    flex: 1,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 20,
+    minHeight: 120,
+  },
+  mealHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 12,
+  },
+  mealTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  mealTime: {
+    fontSize: 14,
+    color: "#666",
+    marginTop: 4,
+  },
+  mealFood: {
+    fontSize: 16,
+    color: "#666",
+    marginTop: 12,
+  },
+  setupPrompt: {
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: "#f1e3ec",
+    borderRadius: 20,
+    marginTop: 20,
+  },
+  setupPromptTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#333",
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  setupPromptText: {
+    fontSize: 16,
+    color: "#666",
+    textAlign: "center",
+    marginBottom: 20,
+  },
+  setupButton: {
+    backgroundColor: "transparent",
+    borderWidth: 2,
+    borderColor: "#666",
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 12,
+  },
+  setupButtonText: {
+    color: "#666",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+});
