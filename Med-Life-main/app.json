@@ -1,0 +1,60 @@
+{
+  "expo": {
+    "name": "med-app",
+    "slug": "med-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/simpleMeditationLogo.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/simpleMeditationLogo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.aryanofficial.medapp"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/simpleMeditationLogo.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.aryanofficial.medapp",
+      "compileSdkVersion": 35,
+      "targetSdkVersion": 35,
+      "buildToolsVersion": "35.0.0"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/simpleMeditationLogo.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0"
+          }
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "1776e1b6-e1f4-4067-81b6-c1067c4e2925"
+      }
+    }
+  }
+}
